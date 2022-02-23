@@ -28,13 +28,27 @@ include(FetchContent)
 
 # ABSL
 if (NOT TARGET absl::strings OR NOT TARGET absl::status OR NOT TARGET absl::span)
-  message(STATUS "osqp-cpp: `absl` targets not found. Attempting to fetch contents...")
-  FetchContent_Declare(
-    abseil-cpp
-    GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
-    GIT_TAG        origin/master
-  )
-  FetchContent_MakeAvailable(abseil-cpp)
+
+  # JIM: In the original version we fetch the source and compile absl
+  # here instead we use a simple find_package to work with the system wide
+  # source files that can be installed on Darwin using
+  # 
+  #         brew install abseil
+  #
+  # TODO: We could compile from source only when the find_package fails.
+  #
+  # Below is the old fetch command.
+  #
+  # message(STATUS "osqp-cpp: `absl` targets not found. Attempting to fetch contents...")
+  # FetchContent_Declare(
+  #   abseil-cpp
+  #   GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
+  #   GIT_TAG        origin/master
+  # )
+  # FetchContent_MakeAvailable(abseil-cpp)
+
+  message(STATUS "osqp-cpp: `absl` targets not found. Attempting to find package...")
+  find_package(absl REQUIRED)
 else()
   message(STATUS "osqp-cpp: `absl` targets found.")
 endif()
